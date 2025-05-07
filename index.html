@@ -14,6 +14,27 @@
     const sheetId = '1qWB5G9iVmBkunQfV_4vFTAwK-UjbTnr5AIDuta6lerY';
     const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
+    let players = [];
+
+    function onYouTubeIframeAPIReady() {
+      const iframes = document.querySelectorAll("iframe[src*='youtube.com']");
+      players = Array.from(iframes).map(iframe => new YT.Player(iframe, {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      }));
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        players.forEach(player => {
+          if (player !== event.target && player.getPlayerState() === YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+          }
+        });
+      }
+    }
+
     fetch(sheetUrl)
       .then(res => res.text())
       .then(text => {
@@ -30,12 +51,16 @@
             const div = document.createElement("div");
             div.className = "video-item";
             div.innerHTML = `
-              <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+              <iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" allowfullscreen></iframe>
               <div class="title">${title || "Без назви"}</div>
             `;
             container.appendChild(div);
           }
         });
+
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
       })
       .catch(err => {
         document.getElementById("videos").innerText = "Помилка при завантаженні відео.";
