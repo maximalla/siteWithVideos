@@ -4,35 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Шкільні відео</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f9f9f9;
-    }
-    .video-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-    }
-    .video-item {
-      width: 100%;
-      max-width: 560px;
-      background: white;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    iframe {
-      width: 100%;
-      height: 315px;
-      border: none;
-    }
-    .title {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Відео змагань і тренувань</h1>
@@ -50,8 +22,8 @@
         const container = document.getElementById("videos");
 
         rows.forEach(row => {
-          const youtubeLink = row.c[9]?.v; // YouTube лінк в колонці J (10-а)
-          const title = row.c[2]?.v;       // Назва відео в колонці C (3-я)
+          const youtubeLink = row.c[9]?.v;
+          const title = row.c[2]?.v;
 
           if (youtubeLink && youtubeLink.includes("youtu")) {
             const videoId = youtubeLink.split("v=")[1]?.split("&")[0] || youtubeLink.split("youtu.be/")[1];
