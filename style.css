@@ -40,3 +40,57 @@ h1 {
   margin-top: 0.5rem;
   text-align: center;
 }
+
+.description {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.meta {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #666;
+  flex-wrap: wrap;
+}
+
+.meta .tags::before {
+  content: "🏷 ";
+  font-weight: bold;
+}
+
+.meta .author::before {
+  content: "✍ ";
+  font-weight: bold;
+}
+
+.description {
+	max-height: 1.5em;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+	position: relative;
+	display: inline;
+}
+.description.expanded {
+	display: block;
+	max-height: 500px;
+}
+.description-container {
+	margin-top: 0.5rem;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	flex-wrap: wrap;
+}
+.toggle-description {
+	background: none;
+	border: none;
+	color: #0057b7;
+	font-size: 1rem;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+}

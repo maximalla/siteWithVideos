@@ -35,6 +35,22 @@
       }
     }
 
+    function formatDateFromSheet(dateObj) {
+      if (!dateObj) return "";
+      if (typeof dateObj === 'object' && dateObj.f) return dateObj.f;
+      if (typeof dateObj === 'string') {
+        const d = new Date(dateObj);
+        if (!isNaN(d)) {
+          return d.toLocaleDateString("uk-UA", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+          });
+        }
+      }
+      return dateObj;
+    }
+
     fetch(sheetUrl)
       .then(res => res.text())
       .then(text => {
@@ -45,14 +61,54 @@
         rows.forEach(row => {
           const youtubeLink = row.c[9]?.v;
           const title = row.c[2]?.v;
+          const date = formatDateFromSheet(row.c[3]);
+          const description = row.c[4]?.v;
+          const tags = row.c[6]?.v;
+          const author = row.c[8]?.v;
 
           if (youtubeLink && youtubeLink.includes("youtu")) {
             const videoId = youtubeLink.split("v=")[1]?.split("&")[0] || youtubeLink.split("youtu.be/")[1];
             const div = document.createElement("div");
             div.className = "video-item";
+
+            let infoHTML = ``;
+            if (title || date) {
+              infoHTML += `<div class="meta">
+                <div class="title">${title || ""}</div>
+                <div class="date">${date || ""}</div>
+              </div>`;
+            }
+            if (description) {
+              infoHTML += `<div class="description-container">
+                <div class="description" id="desc-${videoId}">${description}</div>
+               <button class="toggle-description" onclick="
+  document.querySelectorAll('.description').forEach(el => {
+    if (el !== document.getElementById('desc-${videoId}')) el.classList.remove('expanded');
+  });
+  document.querySelectorAll('.toggle-description').forEach(btn => {
+    if (btn !== this) btn.innerText = '▼';
+  });
+  const d = document.getElementById('desc-${videoId}');
+  const isExpanded = d.classList.toggle('expanded');
+  this.innerText = isExpanded ? '▲' : '▼';
+" title='Розгорнути/згорнути опис'>▼</button>
+
+              </div>`;
+            }
+            if (tags || author) {
+              infoHTML += `<div class="meta">
+                <div class="tags">${
+                  tags
+                    ? tags.split(',').map(t => `<span>${t.trim()}</span>`).join('')
+                    : ''
+                }</div>
+                <div class="author">${author || ""}</div>
+              </div>`;
+            }
+
             div.innerHTML = `
               <iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" allowfullscreen></iframe>
-              <div class="title">${title || "Без назви"}</div>
+              ${infoHTML}
             `;
             container.appendChild(div);
           }
